@@ -1,13 +1,13 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
-import MainLayout from './components/layout/MainLayout'
-import Dashboard from './pages/Dashboard'
-import UploadDocuments from './pages/UploadDocuments'
-import RegulatorySearch from './pages/RegulatorySearch'
-import RegulatoryLibrary from './pages/RegulatoryLibrary'
-import TradeImpact from './pages/TradeImpact'
+import MainLayout from './components/layout/MainLayout';
+import Dashboard from './pages/Dashboard';
+import UploadDocuments from './pages/UploadDocuments';
+import RegulatorySearch from './pages/RegulatorySearch';
+import RegulatoryLibrary from './pages/RegulatoryLibrary';
+import TradeImpact from './pages/TradeImpact';
 
-import './index.css'
+import './index.css';
 
 function PlaceholderPage({ title, description }) {
   return (
@@ -59,11 +59,14 @@ function AppRoutes() {
 
         <Route path="impact" element={<TradeImpact />} />
 
-        <Route path="impact" element={<TradeImpact />} />
-
         <Route
           path="whats-new"
-          element={<WhatsNew />}
+          element={
+            <PlaceholderPage
+              title="What's New"
+              description="Stay informed about recent regulatory updates and changes."
+            />
+          }
         />
 
         <Route
