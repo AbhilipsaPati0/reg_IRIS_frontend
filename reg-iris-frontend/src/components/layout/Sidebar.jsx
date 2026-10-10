@@ -1,15 +1,12 @@
-
-import { NavLink } from 'react-router-dom'
+import { NavLink } from 'react-router-dom';
 import {
   LayoutDashboard,
   Upload,
   Files,
   Search,
   GitCompare,
-  History,
-  Bell,
   ShieldCheck,
-} from 'lucide-react'
+} from 'lucide-react';
 
 const navigationItems = [
   {
@@ -37,17 +34,7 @@ const navigationItems = [
     path: '/impact',
     icon: GitCompare,
   },
-  {
-    label: "What's New",
-    path: '/whats-new',
-    icon: History,
-  },
-  {
-    label: 'Alerts',
-    path: '/alerts',
-    icon: Bell,
-  },
-]
+];
 
 function Sidebar() {
   return (
@@ -68,7 +55,7 @@ function Sidebar() {
 
         <nav className="navigation">
           {navigationItems.map((item) => {
-            const Icon = item.icon
+            const Icon = item.icon;
 
             return (
               <NavLink
@@ -82,7 +69,7 @@ function Sidebar() {
                 <Icon size={19} strokeWidth={1.8} />
                 <span>{item.label}</span>
               </NavLink>
-            )
+            );
           })}
         </nav>
       </div>
@@ -92,7 +79,7 @@ function Sidebar() {
         <span>Regulatory intelligence workspace</span>
       </div>
     </aside>
-  )
+  );
 }
 
-export default Sidebar
+export default Sidebar;

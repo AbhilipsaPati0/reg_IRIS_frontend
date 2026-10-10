@@ -2,16 +2,20 @@
 import { useRef, useState } from 'react'
 import { UploadCloud, FileText } from 'lucide-react'
 
-const ACCEPTED_FORMATS = '.pdf,.html,.htm,.txt'
+const DEFAULT_ACCEPTED_FORMATS = '.pdf,.html,.htm,.txt'
 
-function FileDropzone({ onFileSelect, disabled = false }) {
+function FileDropzone({
+  onFileSelect,
+  disabled = false,
+  accept = DEFAULT_ACCEPTED_FORMATS,
+}) {
   const inputRef = useRef(null)
   const [isDragging, setIsDragging] = useState(false)
 
   function handleFiles(files) {
     const file = files?.[0]
 
-    if (file) {
+    if (file && !disabled) {
       onFileSelect(file)
     }
   }
@@ -25,28 +29,52 @@ function FileDropzone({ onFileSelect, disabled = false }) {
     }
   }
 
+  function handleDragOver(event) {
+    event.preventDefault()
+
+    if (!disabled) {
+      setIsDragging(true)
+    }
+  }
+
+  function handleDragLeave(event) {
+    // Avoid flickering when moving between children inside the dropzone.
+    if (!event.currentTarget.contains(event.relatedTarget)) {
+      setIsDragging(false)
+    }
+  }
+
+  function openFilePicker() {
+    if (!disabled) {
+      inputRef.current?.click()
+    }
+  }
+
+  const acceptedLabel = accept
+    .split(',')
+    .map((extension) => extension.trim().replace('.', '').toUpperCase())
+    .join(', ')
+
   return (
     <div
-      className={`file-dropzone ${isDragging ? 'dragging' : ''}`}
-      onDragOver={(event) => {
-        event.preventDefault()
-
-        if (!disabled) {
-          setIsDragging(true)
-        }
-      }}
-      onDragLeave={() => setIsDragging(false)}
+      className={`file-dropzone ${isDragging ? 'dragging' : ''} ${
+        disabled ? 'dropzone-disabled' : ''
+      }`}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
       onDrop={handleDrop}
       aria-disabled={disabled}
     >
       <input
         ref={inputRef}
         type="file"
-        accept={ACCEPTED_FORMATS}
+        accept={accept}
         hidden
         disabled={disabled}
         onChange={(event) => {
           handleFiles(event.target.files)
+
+          // Allow selecting the same file again.
           event.target.value = ''
         }}
       />
@@ -56,20 +84,23 @@ function FileDropzone({ onFileSelect, disabled = false }) {
       </div>
 
       <h3>Drag and drop your document here</h3>
-      <p>Upload a regulation to add it to your repository</p>
+
+      <p>
+        Upload a regulation to add it to your repository.
+      </p>
 
       <button
         type="button"
         className="browse-button"
         disabled={disabled}
-        onClick={() => inputRef.current?.click()}
+        onClick={openFilePicker}
       >
         <FileText size={17} />
         Browse files
       </button>
 
       <span className="file-format-hint">
-        Supported formats: PDF, HTML and TXT
+        Accepted formats: {acceptedLabel}
       </span>
     </div>
   )
