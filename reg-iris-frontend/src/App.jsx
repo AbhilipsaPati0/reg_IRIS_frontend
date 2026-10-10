@@ -1,13 +1,16 @@
 
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
-import MainLayout from './components/layout/MainLayout'
-import Dashboard from './pages/Dashboard'
-import UploadDocuments from './pages/UploadDocuments'
-import RegulatorySearch from './pages/RegulatorySearch'
-import RegulatoryLibrary from './pages/RegulatoryLibrary'
+import MainLayout from './components/layout/MainLayout';
+import Dashboard from './pages/Dashboard';
+import UploadDocuments from './pages/UploadDocuments';
+import RegulatorySearch from './pages/RegulatorySearch';
+import RegulatoryLibrary from './pages/RegulatoryLibrary';
+import WhatsNew from './pages/WhatsNew';
+import TradeImpact from './pages/TradeImpact';
+import RegulatoryChangeAnalysis from './pages/RegulatoryChangeAnalysis';
 
-import './index.css'
+import './index.css';
 
 function PlaceholderPage({ title, description }) {
   return (
@@ -20,7 +23,7 @@ function PlaceholderPage({ title, description }) {
         </p>
       </div>
     </section>
-  )
+  );
 }
 
 function NotFoundPage() {
@@ -32,6 +35,7 @@ function NotFoundPage() {
         <p className="page-description">
           The page you are looking for does not exist.
         </p>
+
         <button
           type="button"
           className="loading-button"
@@ -41,7 +45,7 @@ function NotFoundPage() {
         </button>
       </div>
     </section>
-  )
+  );
 }
 
 function AppRoutes() {
@@ -56,24 +60,16 @@ function AppRoutes() {
 
         <Route path="search" element={<RegulatorySearch />} />
 
+        <Route path="impact" element={<TradeImpact />} />
+
         <Route
-          path="impact"
-          element={
-            <PlaceholderPage
-              title="Trade Impact Analysis"
-              description="Analyze trade data against regulatory rules."
-            />
-          }
+          path="regulatory-change/:id"
+          element={<RegulatoryChangeAnalysis />}
         />
 
         <Route
           path="whats-new"
-          element={
-            <PlaceholderPage
-              title="What's New"
-              description="Review recently added regulations and updates."
-            />
-          }
+          element={<WhatsNew />}
         />
 
         <Route
@@ -87,10 +83,11 @@ function AppRoutes() {
         />
 
         <Route path="404" element={<NotFoundPage />} />
+
         <Route path="*" element={<Navigate to="/404" replace />} />
       </Route>
     </Routes>
-  )
+  );
 }
 
 export default function App() {
@@ -98,5 +95,5 @@ export default function App() {
     <BrowserRouter>
       <AppRoutes />
     </BrowserRouter>
-  )
+  );
 }
