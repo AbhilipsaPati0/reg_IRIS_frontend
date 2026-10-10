@@ -1,8 +1,6 @@
-
 import { useState } from 'react'
 import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import {
-  Activity,
   Bell,
   BookOpen,
   ChevronDown,
@@ -44,16 +42,6 @@ const navigationItems = [
     path: '/impact',
     icon: GitCompare,
   },
-  {
-    label: "What's New",
-    path: '/whats-new',
-    icon: Activity,
-  },
-  {
-    label: 'Alerts',
-    path: '/alerts',
-    icon: Bell,
-  },
 ]
 
 const pageNames = {
@@ -62,8 +50,6 @@ const pageNames = {
   '/library': 'Regulatory Library',
   '/search': 'Regulatory Search',
   '/impact': 'Trade Impact Analysis',
-  '/whats-new': "What's New",
-  '/alerts': 'Alerts',
   '/404': 'Page Not Found',
 }
 
@@ -180,16 +166,14 @@ function Topbar({ onMenuClick, pageTitle }) {
           <span>Regulatory Intelligence</span>
         </div>
 
-        <NavLink
-          to="/alerts"
-          className={({ isActive }) =>
-            `layout-notification-button ${isActive ? 'layout-notification-active' : ''}`
-          }
-          aria-label="Open alerts"
-          title="Open alerts"
+        <button
+          type="button"
+          className="layout-notification-button"
+          aria-label="Notifications"
+          title="Notifications"
         >
           <Bell size={19} strokeWidth={1.7} />
-        </NavLink>
+        </button>
 
         <div className="layout-profile-wrap">
           <button
@@ -218,13 +202,16 @@ function Topbar({ onMenuClick, pageTitle }) {
                 aria-label="Close profile menu"
                 onClick={() => setProfileOpen(false)}
               />
+
               <div className="layout-profile-dropdown">
                 <span className="layout-dropdown-label">SIGNED IN AS</span>
                 <strong>Compliance Officer</strong>
                 <span className="layout-dropdown-description">
                   Reg IRIS workspace
                 </span>
+
                 <div className="layout-dropdown-divider" />
+
                 <NavLink
                   to="/"
                   onClick={() => setProfileOpen(false)}
@@ -232,14 +219,6 @@ function Topbar({ onMenuClick, pageTitle }) {
                 >
                   <LayoutDashboard size={16} />
                   Go to dashboard
-                </NavLink>
-                <NavLink
-                  to="/alerts"
-                  onClick={() => setProfileOpen(false)}
-                  className="layout-dropdown-link"
-                >
-                  <Bell size={16} />
-                  View alerts
                 </NavLink>
               </div>
             </>
