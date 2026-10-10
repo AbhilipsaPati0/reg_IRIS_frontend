@@ -1,0 +1,275 @@
+
+/* =========================================
+   REG IRIS — APP SHELL & NAVIGATION
+   ========================================= */
+
+/* Main application shell */
+.app-shell {
+  display: flex;
+  min-height: 100vh;
+  background: #f5f7fb;
+}
+
+.main-content {
+  flex: 1;
+  min-width: 0;
+  min-height: 100vh;
+  margin-left: 252px;
+}
+
+/* Sidebar */
+.sidebar {
+  position: fixed;
+  inset: 0 auto 0 0;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  width: 252px;
+  padding: 26px 16px 18px;
+  overflow-y: auto;
+  background: #101c35;
+  color: #d5deef;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 8px 30px;
+}
+
+.brand-icon {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 43px;
+  height: 43px;
+  border-radius: 13px;
+  background: #dce8ff;
+  color: #173a78;
+}
+
+.brand-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.brand-details strong {
+  color: #fff;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.brand-details span {
+  color: #9eafcc;
+  font-size: 10px;
+  line-height: 1.5;
+  letter-spacing: 1px;
+}
+
+.sidebar-section {
+  margin: 8px 10px 12px;
+  color: #8394b2;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.4px;
+}
+
+.navigation {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  padding: 0 12px;
+  border-radius: 9px;
+  color: #bdc9dd;
+  font-size: 13px;
+  font-weight: 500;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.nav-item:hover {
+  background: #1b2b49;
+  color: #fff;
+}
+
+.nav-item.active {
+  background: #263f69;
+  color: #fff;
+  box-shadow: inset 3px 0 #78a9ff;
+}
+
+.nav-item svg {
+  flex-shrink: 0;
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding: 20px 10px 4px;
+  color: #9eafcc;
+  font-size: 12px;
+}
+
+/* Topbar */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  min-height: 76px;
+  padding: 14px 34px;
+  border-bottom: 1px solid #e7ebf2;
+  background: #fff;
+}
+
+.topbar-breadcrumb {
+  color: #718096;
+  font-size: 12px;
+}
+
+.topbar-title {
+  margin-top: 5px;
+  color: #182230;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.notification-button {
+  position: relative;
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid #e7ebf2;
+  border-radius: 10px;
+  background: #fff;
+  color: #53647d;
+}
+
+.notification-button:hover {
+  background: #f5f8fd;
+}
+
+.notification-dot {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 7px;
+  height: 7px;
+  border: 1px solid #fff;
+  border-radius: 50%;
+  background: #e45454;
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.profile-avatar {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #e2eaff;
+  color: #254b91;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.profile-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.profile-details strong {
+  font-size: 12px;
+}
+
+.profile-details span {
+  color: #778398;
+  font-size: 11px;
+}
+
+/* Responsive layout */
+@media (max-width: 900px) {
+  .sidebar {
+    width: 215px;
+  }
+
+  .main-content {
+    margin-left: 215px;
+  }
+
+  .topbar {
+    padding: 14px 22px;
+  }
+}
+
+@media (max-width: 640px) {
+  .sidebar {
+    width: 68px;
+    padding: 16px 8px;
+  }
+
+  .brand {
+    justify-content: center;
+    padding: 0 0 24px;
+  }
+
+  .brand-details,
+  .sidebar-section,
+  .sidebar-footer,
+  .nav-item span {
+    display: none;
+  }
+
+  .navigation {
+    align-items: center;
+  }
+
+  .nav-item {
+    justify-content: center;
+    width: 48px;
+    padding: 0;
+  }
+
+  .main-content {
+    margin-left: 68px;
+  }
+
+  .topbar {
+    min-height: 68px;
+    padding: 12px 14px;
+  }
+
+  .topbar-actions {
+    gap: 10px;
+  }
+
+  .profile-details {
+    display: none;
+  }
+}
