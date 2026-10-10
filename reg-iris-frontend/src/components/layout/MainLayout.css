@@ -643,3 +643,78 @@
     transition: none !important;
   }
 }
+
+/* =========================================
+   REG IRIS — CONSISTENT GREEN THEME
+   Visual overrides only; preserve existing layout
+   ========================================= */
+
+.layout-shell {
+  --layout-green: #16845b;
+  --layout-green-dark: #075b42;
+  --layout-green-deep: #064b38;
+  --layout-green-pale: #edf6ef;
+  --layout-ink: #24352c;
+  --layout-muted: #78867e;
+  --layout-border: #e6ebe7;
+  --layout-page: #f8faf8;
+  --layout-white: #ffffff;
+}
+
+/* Sidebar and navigation */
+.layout-sidebar {
+  background: #ffffff;
+  border-right-color: #e6ebe7;
+}
+
+.layout-nav-item-active {
+  color: #075b42;
+  background: #edf6ef;
+  border-color: #dcece0;
+}
+
+.layout-nav-item-active::before {
+  background: #16845b;
+}
+
+.layout-nav-item:hover {
+  color: #075b42;
+  background: #f1f8f3;
+}
+
+/* Topbar and profile */
+.layout-topbar {
+  background: rgb(255 255 255 / 96%);
+  border-bottom-color: #e6ebe7;
+}
+
+.layout-notification-button:hover,
+.layout-notification-active {
+  color: #075b42;
+  background: #edf6ef;
+  border-color: #d5e8da;
+}
+
+.layout-profile-avatar {
+  color: #075b42;
+  background: #edf6ef;
+  border-color: #cfe4d5;
+}
+
+/* Dropdown */
+.layout-profile-dropdown {
+  background: #ffffff;
+  border-color: #e6ebe7;
+}
+
+.layout-dropdown-link:hover {
+  color: #075b42;
+  background: #edf6ef;
+}
+
+/* Keyboard focus */
+.layout-shell a:focus-visible,
+.layout-shell button:focus-visible {
+  outline: 2px solid #16845b;
+  outline-offset: 3px;
+}

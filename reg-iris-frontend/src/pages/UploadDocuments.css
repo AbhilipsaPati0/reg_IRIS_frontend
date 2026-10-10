@@ -1,14 +1,24 @@
+
 /* =====================================
    REG IRIS — UPLOAD REGULATIONS
+   FOREST GREEN + WHITE THEME
    ===================================== */
 
 .upload-page {
+  --upload-green: #16845b;
+  --upload-green-dark: #075b42;
+  --upload-green-deep: #064b38;
+  --upload-green-soft: #edf6ef;
+  --upload-green-border: #cfe4d5;
+  --upload-ink: #24382d;
+  --upload-muted: #718078;
+
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
   padding: 24px 32px 40px;
   box-sizing: border-box;
-  color: #172b45;
+  color: var(--upload-ink);
 }
 
 .upload-page *,
@@ -26,16 +36,20 @@
   background: transparent;
 }
 
+.upload-page .page-eyebrow {
+  color: var(--upload-green) !important;
+}
+
 .upload-page .page-title {
   margin: 6px 0 10px;
-  color: #172b45;
+  color: var(--upload-ink);
   font-size: clamp(26px, 3vw, 34px);
   line-height: 1.25;
 }
 
 .upload-page .page-description {
   margin: 0;
-  color: #718096;
+  color: var(--upload-muted);
   line-height: 1.7;
 }
 
@@ -45,10 +59,10 @@
   width: 100%;
   min-width: 0;
   padding: 28px;
-  border: 1px solid #e1e8f0;
+  border: 1px solid #dfe9e2;
   border-radius: 16px;
   background: #fff;
-  box-shadow: 0 4px 18px rgb(15 35 65 / 4%);
+  box-shadow: 0 4px 18px rgb(15 55 33 / 4%);
 }
 
 /* Card heading */
@@ -62,14 +76,14 @@
 
 .upload-card-heading h2 {
   margin: 0 0 6px;
-  color: #142d4e;
+  color: var(--upload-green-dark);
   font-size: 19px;
   font-weight: 700;
 }
 
 .upload-card-heading p {
   margin: 0;
-  color: #718096;
+  color: var(--upload-muted);
   font-size: 13px;
   line-height: 1.6;
 }
@@ -80,9 +94,10 @@
   width: 46px;
   height: 46px;
   place-items: center;
+  border: 1px solid #d7eade;
   border-radius: 12px;
-  background: #eaf1ff;
-  color: #28549a;
+  background: #eaf5ed;
+  color: var(--upload-green);
 }
 
 /* Two linked file-format dropdowns */
@@ -102,7 +117,7 @@
 }
 
 .upload-filter > label {
-  color: #203752;
+  color: #245238;
   font-size: 13px;
   font-weight: 700;
 }
@@ -115,26 +130,29 @@
   min-width: 0;
   min-height: 46px;
   padding: 0 12px;
-  border: 1px solid #d8e2ee;
+  border: 1px solid #d5e5d9;
   border-radius: 9px;
   background: #fff;
-  color: #45618a;
+  color: var(--upload-green);
   transition:
     border-color 160ms ease,
-    box-shadow 160ms ease;
+    box-shadow 160ms ease,
+    background-color 160ms ease;
 }
 
 .upload-select-wrap:hover {
-  border-color: #bdcde0;
+  border-color: #a9cfb5;
+  background: #fcfefc;
 }
 
 .upload-select-wrap:focus-within {
-  border-color: #315b9a;
-  box-shadow: 0 0 0 3px rgb(49 91 154 / 9%);
+  border-color: var(--upload-green);
+  box-shadow: 0 0 0 3px rgb(22 132 91 / 12%);
 }
 
 .upload-select-wrap > svg {
   flex-shrink: 0;
+  color: var(--upload-green);
   pointer-events: none;
 }
 
@@ -148,37 +166,111 @@
   outline: none;
   appearance: none;
   background: transparent;
-  color: #263c56;
+  color: #304438;
   font-family: inherit;
   font-size: 13px;
   cursor: pointer;
 }
 
+.upload-select-wrap select:focus-visible {
+  outline: none;
+}
+
 .upload-select-wrap select:disabled {
   cursor: not-allowed;
-  color: #718096;
+  color: #718078;
   opacity: 0.75;
+}
+
+.upload-select-wrap select option {
+  color: #304438;
+  background: #fff;
 }
 
 .upload-filter-hint {
   margin: 0;
-  color: #8290a3;
+  color: #829087;
   font-size: 11px;
   line-height: 1.5;
 }
 
 /* File dropzone
-   Shared dropzone styling remains in index.css. */
+   Base styles remain in index.css. */
 
 .upload-page .file-dropzone {
   width: 100%;
   margin-top: 2px;
+  border-color: #a9d1b5;
+  background: #f8fcf9;
 }
 
-/* Selected file spacing */
+.upload-page .file-dropzone:hover,
+.upload-page .file-dropzone.dragging {
+  border-color: var(--upload-green);
+  background: #edf7f0;
+}
+
+.upload-page .dropzone-icon {
+  border-color: #d4e9da;
+  background: #eaf5ed;
+  color: var(--upload-green);
+}
+
+.upload-page .file-dropzone h3 {
+  color: #254432;
+}
+
+.upload-page .file-dropzone p {
+  color: var(--upload-muted);
+}
+
+.upload-page .file-format-hint {
+  color: #829087;
+}
+
+/* Browse button */
+
+.upload-page .browse-button {
+  border-color: var(--upload-green-dark);
+  color: #fff;
+  background: var(--upload-green-dark);
+}
+
+.upload-page .browse-button:hover:not(:disabled) {
+  border-color: var(--upload-green-deep);
+  background: var(--upload-green-deep);
+}
+
+/* Selected file */
 
 .upload-page .selected-file {
+  display: flex;
+  align-items: center;
+  gap: 13px;
   margin-top: 14px;
+  border-color: #d5e7da;
+  border-radius: 12px;
+  background: #f7fbf8;
+}
+
+.upload-page .selected-file > svg {
+  flex-shrink: 0;
+  color: var(--upload-green);
+}
+
+.upload-page .selected-file h3,
+.upload-page .selected-file strong {
+  color: #294734;
+}
+
+.upload-page .selected-file p,
+.upload-page .selected-file span {
+  color: #7b8980;
+  font-size: 11px;
+}
+
+.upload-page .selected-file button {
+  color: var(--upload-green-dark);
 }
 
 /* Import mode */
@@ -186,7 +278,7 @@
 .upload-mode {
   margin-top: 28px;
   padding-top: 24px;
-  border-top: 1px solid #e8edf3;
+  border-top: 1px solid #e2ebe4;
 }
 
 .upload-mode-heading {
@@ -195,7 +287,7 @@
 
 .upload-mode-heading h3 {
   margin: 0 0 6px;
-  color: #203752;
+  color: #245238;
   font-size: 14px;
   font-weight: 700;
 }
@@ -206,7 +298,7 @@
 
 .upload-mode-heading p {
   margin: 0;
-  color: #718096;
+  color: var(--upload-muted);
   font-size: 13px;
   line-height: 1.6;
 }
@@ -225,30 +317,30 @@
   gap: 12px;
   min-width: 0;
   padding: 18px;
-  border: 1px solid #dce5ef;
+  border: 1px solid #d5e5d9;
   border-radius: 12px;
   background: #fff;
   cursor: pointer;
   transition:
     border-color 160ms ease,
-    background 160ms ease,
+    background-color 160ms ease,
     box-shadow 160ms ease;
 }
 
 .upload-mode-options > label:hover,
 .upload-mode-options > label.selected {
-  border-color: #315b9a;
-  background: #f3f7ff;
+  border-color: var(--upload-green);
+  background: #edf6ef;
 }
 
 .upload-mode-options > label.selected {
-  box-shadow: 0 0 0 2px rgb(49 91 154 / 7%);
+  box-shadow: 0 0 0 2px rgb(22 132 91 / 8%);
 }
 
 .upload-mode-options input[type='radio'] {
   flex-shrink: 0;
   margin-top: 4px;
-  accent-color: #28549a;
+  accent-color: var(--upload-green);
 }
 
 .upload-mode-icon {
@@ -258,8 +350,8 @@
   height: 40px;
   place-items: center;
   border-radius: 10px;
-  background: #e9f0ff;
-  color: #28549a;
+  background: #eaf5ed;
+  color: var(--upload-green);
 }
 
 .upload-mode-copy {
@@ -270,17 +362,17 @@
 }
 
 .upload-mode-copy strong {
-  color: #193452;
+  color: #245238;
   font-size: 14px;
 }
 
 .upload-mode-copy small {
-  color: #6b7c91;
+  color: #6e8074;
   font-size: 12px;
   line-height: 1.6;
 }
 
-/* Override warning */
+/* Override warning — retain amber for visibility */
 
 .upload-mode-warning {
   padding: 12px 14px;
@@ -300,6 +392,31 @@
   margin-top: 18px;
 }
 
+/* Success and error feedback */
+
+.upload-page .status-message,
+.upload-page .upload-result {
+  border-radius: 10px;
+}
+
+.upload-page .status-message.success,
+.upload-page .status-message--success,
+.upload-page .upload-result.success,
+.upload-page .upload-result--success {
+  border-color: #b8dec4;
+  color: #075b42;
+  background: #edf7f0;
+}
+
+.upload-page .status-message.error,
+.upload-page .status-message--error,
+.upload-page .upload-result.error,
+.upload-page .upload-result--error {
+  border-color: #edcaca;
+  color: #963c3c;
+  background: #fff6f5;
+}
+
 /* Footer */
 
 .upload-card-footer {
@@ -310,7 +427,7 @@
   gap: 16px;
   margin-top: 24px;
   padding-top: 20px;
-  border-top: 1px solid #e8edf3;
+  border-top: 1px solid #e2ebe4;
 }
 
 .upload-card-footer p {
@@ -318,23 +435,50 @@
   align-items: center;
   gap: 8px;
   margin: 0;
-  color: #718096;
+  color: var(--upload-muted);
   font-size: 12px;
   line-height: 1.6;
 }
 
 .upload-card-footer p svg {
   flex-shrink: 0;
+  color: var(--upload-green);
 }
 
-.upload-card-footer .primary-button {
+.upload-card-footer .primary-button,
+.upload-card-footer .loading-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   min-height: 44px;
   padding: 0 20px;
+  border: 1px solid var(--upload-green-dark);
+  border-radius: 9px;
+  color: #fff;
+  background: var(--upload-green-dark);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 750;
   white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
+}
+
+.upload-card-footer .primary-button:hover:not(:disabled),
+.upload-card-footer .loading-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  background: var(--upload-green-deep);
+  box-shadow: 0 5px 12px rgb(7 91 66 / 14%);
+}
+
+.upload-card-footer .primary-button:disabled,
+.upload-card-footer .loading-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
 }
 
 /* Responsible document handling */
@@ -345,14 +489,15 @@
   gap: 12px;
   margin-top: 20px;
   padding: 18px 20px;
-  border: 1px solid #dce8df;
+  border: 1px solid #d6e8db;
   border-radius: 12px;
-  background: #f7fbf8;
-  color: #28734c;
+  background: #f3faf5;
+  color: var(--upload-green-dark);
 }
 
 .upload-security-note svg {
   flex-shrink: 0;
+  color: var(--upload-green);
 }
 
 .upload-security-note strong {
@@ -364,6 +509,15 @@
   color: #617568;
   font-size: 12px;
   line-height: 1.6;
+}
+
+/* Keyboard accessibility */
+
+.upload-page button:focus-visible,
+.upload-page input:focus-visible,
+.upload-page select:focus-visible {
+  outline: 3px solid rgb(22 132 91 / 25%);
+  outline-offset: 3px;
 }
 
 /* Responsive layout */
@@ -397,12 +551,32 @@
     flex-direction: column;
   }
 
-  .upload-card-footer .primary-button {
+  .upload-card-footer .primary-button,
+  .upload-card-footer .loading-button {
     width: 100%;
   }
 
   .upload-security-note {
     padding: 15px;
+  }
+}
+
+@media (max-width: 420px) {
+  .upload-page {
+    padding: 19px 12px 26px;
+  }
+
+  .upload-page .page-title {
+    font-size: 27px;
+  }
+
+  .upload-page .file-dropzone h3 {
+    font-size: 14px;
+  }
+
+  .upload-card-footer .primary-button,
+  .upload-card-footer .loading-button {
+    width: 100%;
   }
 }
 

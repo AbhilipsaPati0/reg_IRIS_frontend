@@ -3,7 +3,7 @@
   max-width: 1440px;
   margin: 0 auto;
   padding: 28px 32px 40px;
-  color: #172b45;
+  color: #174518;
 }
 
 .trade-impact *,
@@ -26,7 +26,7 @@
 
 .trade-impact__eyebrow {
   margin: 0 0 9px;
-  color: #4169b2;
+  color: #41b256;
   font-size: 11px;
   font-weight: 800;
   letter-spacing: 1.5px;
@@ -34,7 +34,7 @@
 
 .trade-impact__header h1 {
   margin: 0;
-  color: #122541;
+  color: #124118;
   font-size: clamp(27px, 3vw, 34px);
   font-weight: 750;
   letter-spacing: -1px;
@@ -43,7 +43,7 @@
 
 .trade-impact__subtitle,
 .trade-impact__panel-heading p {
-  color: #718096;
+  color: #7e9671;
   font-size: 14px;
   line-height: 1.7;
 }
@@ -72,14 +72,14 @@
 
 .trade-impact__run {
   flex-shrink: 0;
-  border: 1px solid #234b91;
+  border: 1px solid #239125;
   color: #fff;
-  background: #234b91;
+  background: #239130;
   box-shadow: 0 3px 8px rgb(35 75 145 / 12%);
 }
 
 .trade-impact__run:hover:not(:disabled) {
-  background: #193b76;
+  background: #19763d;
   transform: translateY(-1px);
 }
 
@@ -91,7 +91,7 @@
 
 .trade-impact__export {
   border: 1px solid #dbe3ec;
-  color: #344960;
+  color: #346045;
   background: #fff;
 }
 
@@ -156,13 +156,13 @@
 
 .trade-impact__stat p {
   margin: 0 0 7px;
-  color: #718096;
+  color: #7c9671;
   font-size: 12px;
   line-height: 1.4;
 }
 
 .trade-impact__stat strong {
-  color: #172b45;
+  color: #1c4517;
   font-size: 27px;
   font-weight: 750;
   line-height: 1.2;
@@ -183,7 +183,7 @@
 
 .trade-impact__panel-heading h2 {
   margin: 0;
-  color: #172b45;
+  color: #17451c;
   font-size: 19px;
   font-weight: 750;
 }
@@ -208,15 +208,15 @@
   min-width: 160px;
   min-height: 42px;
   padding: 0 12px;
-  border: 1px solid #dbe3ec;
+  border: 1px solid #dbecdb;
   border-radius: 9px;
-  color: #8290a3;
+  color: #82a383;
   background: #fff;
   transition: border-color 160ms ease, box-shadow 160ms ease;
 }
 
 .trade-impact__search:focus-within {
-  border-color: #7396d1;
+  border-color: #73d173;
   box-shadow: 0 0 0 3px rgb(59 104 180 / 10%);
 }
 
@@ -226,14 +226,14 @@
   padding: 10px 0;
   border: 0;
   outline: none;
-  color: #172b45;
+  color: #17451c;
   background: transparent;
   font: inherit;
   font-size: 13px;
 }
 
 .trade-impact__search input::placeholder {
-  color: #9aa7b7;
+  color: #9ab7a2;
 }
 
 .trade-impact__toolbar select {
@@ -243,7 +243,7 @@
   border: 1px solid #dbe3ec;
   border-radius: 9px;
   outline: none;
-  color: #43566e;
+  color: #436e4e;
   background-color: #fff;
   font: inherit;
   font-size: 12px;
@@ -267,7 +267,7 @@
 
 .trade-impact__table th {
   padding: 14px 20px;
-  color: #64758b;
+  color: #648b64;
   background: #f7f9fc;
   font-size: 10px;
   font-weight: 800;
@@ -279,7 +279,7 @@
 .trade-impact__table td {
   padding: 17px 20px;
   border-top: 1px solid #edf1f5;
-  color: #52647a;
+  color: #537a52;
   font-size: 12px;
   line-height: 1.7;
   vertical-align: top;
@@ -294,7 +294,7 @@
 }
 
 .trade-impact__id {
-  color: #243a53 !important;
+  color: #245330 !important;
   font-weight: 750;
   white-space: nowrap;
 }
@@ -326,13 +326,13 @@
 }
 
 .trade-impact__badge--unknown {
-  color: #475569;
+  color: #47694c;
   background: #e2e8f0;
 }
 
 .trade-impact__no-results {
   padding: 35px 20px !important;
-  color: #718096 !important;
+  color: #719679 !important;
   text-align: center;
 }
 
@@ -343,7 +343,7 @@
   gap: 16px;
   padding: 17px 24px;
   border-top: 1px solid #edf1f5;
-  color: #718096;
+  color: #719679;
   font-size: 12px;
 }
 
@@ -358,14 +358,14 @@
   padding: 7px 12px;
   border: 1px solid #dbe3ec;
   border-radius: 7px;
-  color: #43566e;
+  color: #436e47;
   background: #fff;
   font-size: 12px;
   cursor: pointer;
 }
 
 .trade-impact__pagination button:hover:not(:disabled) {
-  border-color: #9eb5d8;
+  border-color: #9ed8a7;
   background: #f6f9fd;
 }
 
@@ -381,17 +381,17 @@
   justify-content: center;
   min-height: 260px;
   padding: 42px 24px;
-  color: #8290a3;
+  color: #82a391;
   text-align: center;
 }
 
 .trade-impact__empty > svg {
-  color: #7396d1;
+  color: #76d173;
 }
 
 .trade-impact__empty h3 {
   margin: 15px 0 5px;
-  color: #243a53;
+  color: #24532e;
   font-size: 17px;
   font-weight: 750;
 }
@@ -399,7 +399,7 @@
 .trade-impact__empty p {
   max-width: 440px;
   margin: 6px 0 0;
-  color: #718096;
+  color: #719679;
   font-size: 13px;
   line-height: 1.8;
 }
