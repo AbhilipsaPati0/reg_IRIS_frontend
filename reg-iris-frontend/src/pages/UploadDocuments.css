@@ -1,4 +1,3 @@
-
 /* =====================================
    REG IRIS — UPLOAD REGULATIONS
    ===================================== */
@@ -11,6 +10,14 @@
   box-sizing: border-box;
   color: #172b45;
 }
+
+.upload-page *,
+.upload-page *::before,
+.upload-page *::after {
+  box-sizing: border-box;
+}
+
+/* Page heading */
 
 .upload-page .page-header {
   position: relative;
@@ -32,10 +39,11 @@
   line-height: 1.7;
 }
 
+/* Main upload card */
+
 .upload-card {
   width: 100%;
   min-width: 0;
-  box-sizing: border-box;
   padding: 28px;
   border: 1px solid #e1e8f0;
   border-radius: 16px;
@@ -43,17 +51,20 @@
   box-shadow: 0 4px 18px rgb(15 35 65 / 4%);
 }
 
+/* Card heading */
+
 .upload-card-heading {
   display: flex;
   align-items: center;
   gap: 14px;
-  margin-bottom: 24px;
+  margin-bottom: 26px;
 }
 
 .upload-card-heading h2 {
   margin: 0 0 6px;
   color: #142d4e;
   font-size: 19px;
+  font-weight: 700;
 }
 
 .upload-card-heading p {
@@ -74,31 +85,103 @@
   color: #28549a;
 }
 
+/* Two linked file-format dropdowns */
+
+.upload-filter-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin-bottom: 20px;
+}
+
 .upload-filter {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin-bottom: 18px;
+  gap: 9px;
+  min-width: 0;
 }
 
-.upload-filter label,
-.upload-mode-heading h3 {
+.upload-filter > label {
   color: #203752;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
 }
 
-.upload-filter select {
+.upload-select-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   width: 100%;
-  max-width: 360px;
-  min-height: 44px;
+  min-width: 0;
+  min-height: 46px;
   padding: 0 12px;
   border: 1px solid #d8e2ee;
   border-radius: 9px;
   background: #fff;
-  color: #263c56;
-  font: inherit;
+  color: #45618a;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease;
 }
+
+.upload-select-wrap:hover {
+  border-color: #bdcde0;
+}
+
+.upload-select-wrap:focus-within {
+  border-color: #315b9a;
+  box-shadow: 0 0 0 3px rgb(49 91 154 / 9%);
+}
+
+.upload-select-wrap > svg {
+  flex-shrink: 0;
+  pointer-events: none;
+}
+
+.upload-select-wrap select {
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  outline: none;
+  appearance: none;
+  background: transparent;
+  color: #263c56;
+  font-family: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.upload-select-wrap select:disabled {
+  cursor: not-allowed;
+  color: #718096;
+  opacity: 0.75;
+}
+
+.upload-filter-hint {
+  margin: 0;
+  color: #8290a3;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+/* File dropzone
+   Shared dropzone styling remains in index.css. */
+
+.upload-page .file-dropzone {
+  width: 100%;
+  margin-top: 2px;
+}
+
+/* Selected file spacing */
+
+.upload-page .selected-file {
+  margin-top: 14px;
+}
+
+/* Import mode */
 
 .upload-mode {
   margin-top: 28px;
@@ -112,6 +195,9 @@
 
 .upload-mode-heading h3 {
   margin: 0 0 6px;
+  color: #203752;
+  font-size: 14px;
+  font-weight: 700;
 }
 
 .upload-mode-heading h3 span {
@@ -124,6 +210,8 @@
   font-size: 13px;
   line-height: 1.6;
 }
+
+/* Concatenate and Override cards */
 
 .upload-mode-options {
   display: grid;
@@ -141,7 +229,10 @@
   border-radius: 12px;
   background: #fff;
   cursor: pointer;
-  transition: border-color 160ms ease, background 160ms ease;
+  transition:
+    border-color 160ms ease,
+    background 160ms ease,
+    box-shadow 160ms ease;
 }
 
 .upload-mode-options > label:hover,
@@ -150,7 +241,11 @@
   background: #f3f7ff;
 }
 
-.upload-mode-options input[type="radio"] {
+.upload-mode-options > label.selected {
+  box-shadow: 0 0 0 2px rgb(49 91 154 / 7%);
+}
+
+.upload-mode-options input[type='radio'] {
   flex-shrink: 0;
   margin-top: 4px;
   accent-color: #28549a;
@@ -185,6 +280,8 @@
   line-height: 1.6;
 }
 
+/* Override warning */
+
 .upload-mode-warning {
   padding: 12px 14px;
   margin-top: 14px;
@@ -195,6 +292,15 @@
   font-size: 12px;
   line-height: 1.6;
 }
+
+/* Upload feedback */
+
+.upload-card .upload-result,
+.upload-card .status-message {
+  margin-top: 18px;
+}
+
+/* Footer */
 
 .upload-card-footer {
   display: flex;
@@ -217,6 +323,10 @@
   line-height: 1.6;
 }
 
+.upload-card-footer p svg {
+  flex-shrink: 0;
+}
+
 .upload-card-footer .primary-button {
   display: inline-flex;
   align-items: center;
@@ -226,6 +336,8 @@
   padding: 0 20px;
   white-space: nowrap;
 }
+
+/* Responsible document handling */
 
 .upload-security-note {
   display: flex;
@@ -254,6 +366,18 @@
   line-height: 1.6;
 }
 
+/* Responsive layout */
+
+@media (max-width: 900px) {
+  .upload-page {
+    padding: 22px 20px 32px;
+  }
+
+  .upload-card {
+    padding: 22px;
+  }
+}
+
 @media (max-width: 760px) {
   .upload-page {
     padding: 20px 16px 32px;
@@ -263,8 +387,9 @@
     padding: 18px;
   }
 
+  .upload-filter-grid,
   .upload-mode-options {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .upload-card-footer {
@@ -274,5 +399,17 @@
 
   .upload-card-footer .primary-button {
     width: 100%;
+  }
+
+  .upload-security-note {
+    padding: 15px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .upload-page *,
+  .upload-page *::before,
+  .upload-page *::after {
+    transition-duration: 0.01ms !important;
   }
 }

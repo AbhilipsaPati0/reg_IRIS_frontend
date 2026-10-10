@@ -1,4 +1,3 @@
-
 import { useState } from 'react'
 import {
   Search,
@@ -15,9 +14,39 @@ import './RegulatorySearch.css'
 
 const INITIAL_FILTERS = {
   regulator: '',
+  jurisdiction: '',
+  category: '',
   documentType: '',
   effectiveDate: '',
+  effectiveTo: '',
 }
+
+const REGULATORS = [
+  { value: 'SEC', label: 'SEC — United States' },
+  { value: 'FCA', label: 'FCA — United Kingdom' },
+  { value: 'ESMA', label: 'ESMA — European Union' },
+  { value: 'CFTC', label: 'CFTC — United States' },
+  { value: 'RBI', label: 'RBI — India' },
+  { value: 'SEBI', label: 'SEBI — India' },
+  { value: 'Other', label: 'Other' },
+]
+
+const JURISDICTIONS = [
+  { value: 'United States', label: 'United States' },
+  { value: 'United Kingdom', label: 'United Kingdom' },
+  { value: 'European Union', label: 'European Union' },
+  { value: 'India', label: 'India' },
+  { value: 'Other', label: 'Other' },
+]
+
+const CATEGORIES = [
+  { value: 'Reporting', label: 'Reporting' },
+  { value: 'Transaction Reporting', label: 'Transaction reporting' },
+  { value: 'Data Quality', label: 'Data quality' },
+  { value: 'Risk Management', label: 'Risk management' },
+  { value: 'Capital Requirements', label: 'Capital requirements' },
+  { value: 'Other', label: 'Other' },
+]
 
 function getDocumentName(item) {
   return (
@@ -60,9 +89,14 @@ function SourceCard({ item, regulatorFilter }) {
       <div className="reg-search__result-content">
         <div className="reg-search__source-heading">
           <h3>{documentName}</h3>
+
           {score != null && Number.isFinite(Number(score)) && (
             <span className="reg-search__relevance">
-              Relevance: {Math.round(Number(score) * (Number(score) <= 1 ? 100 : 1))}%
+              Relevance:{' '}
+              {Math.round(
+                Number(score) * (Number(score) <= 1 ? 100 : 1)
+              )}
+              %
             </span>
           )}
         </div>
@@ -73,6 +107,8 @@ function SourceCard({ item, regulatorFilter }) {
 
         <div className="reg-search__citation">
           {regulator && <span>{regulator}</span>}
+          {item.jurisdiction && <span>{item.jurisdiction}</span>}
+          {item.category && <span>{item.category}</span>}
           {item.document_type && <span>{item.document_type}</span>}
           <span>{page != null ? `Page ${page}` : 'Page unavailable'}</span>
           {item.clause_number && <span>Clause {item.clause_number}</span>}
@@ -120,6 +156,15 @@ export default function RegulatorySearch() {
       return
     }
 
+    if (
+      filters.effectiveDate &&
+      filters.effectiveTo &&
+      filters.effectiveTo < filters.effectiveDate
+    ) {
+      setError('"Effective to" must be on or after "Effective from".')
+      return
+    }
+
     setLoading(true)
     setError('')
     setSearched(true)
@@ -131,13 +176,16 @@ export default function RegulatorySearch() {
       const data = await searchRegulations({
         query: query.trim(),
         regulator: filters.regulator,
+        jurisdiction: filters.jurisdiction,
+        category: filters.category,
         documentType: filters.documentType,
         effectiveDate: filters.effectiveDate,
+        effectiveTo: filters.effectiveTo,
       })
 
-      setResults(data.results)
-      setAnswer(data.answer)
-      setTotal(data.total)
+      setResults(Array.isArray(data.results) ? data.results : [])
+      setAnswer(data.answer ?? '')
+      setTotal(data.total ?? data.results?.length ?? 0)
     } catch (err) {
       setResults([])
       setAnswer('')
@@ -166,7 +214,9 @@ export default function RegulatorySearch() {
     <main className="reg-search">
       <header className="reg-search__header">
         <div>
-          <p className="reg-search__eyebrow">REG IRIS / INTELLIGENT SEARCH</p>
+          <p className="reg-search__eyebrow">
+            REG IRIS / INTELLIGENT SEARCH
+          </p>
           <h1>Regulatory Intelligence Search</h1>
           <p className="reg-search__subtitle">
             Ask questions across your regulatory repository and trace answers
@@ -214,9 +264,46 @@ export default function RegulatorySearch() {
                 onChange={updateFilter}
               >
                 <option value="">All regulators</option>
-                <option value="RBI">RBI</option>
-                <option value="SEBI">SEBI</option>
-                <option value="Other">Other</option>
+                {REGULATORS.map((regulator) => (
+                  <option key={regulator.value} value={regulator.value}>
+                    {regulator.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            <label className="reg-search__filter">
+              <span>Jurisdiction</span>
+              <select
+                name="jurisdiction"
+                value={filters.jurisdiction}
+                onChange={updateFilter}
+              >
+                <option value="">All jurisdictions</option>
+                {JURISDICTIONS.map((jurisdiction) => (
+                  <option
+                    key={jurisdiction.value}
+                    value={jurisdiction.value}
+                  >
+                    {jurisdiction.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            <label className="reg-search__filter">
+              <span>Category</span>
+              <select
+                name="category"
+                value={filters.category}
+                onChange={updateFilter}
+              >
+                <option value="">All categories</option>
+                {CATEGORIES.map((category) => (
+                  <option key={category.value} value={category.value}>
+                    {category.label}
+                  </option>
+                ))}
               </select>
             </label>
 
@@ -243,6 +330,17 @@ export default function RegulatorySearch() {
                 onChange={updateFilter}
               />
             </label>
+
+            <label className="reg-search__filter">
+              <span>Effective to</span>
+              <input
+                type="date"
+                name="effectiveTo"
+                value={filters.effectiveTo}
+                min={filters.effectiveDate || undefined}
+                onChange={updateFilter}
+              />
+            </label>
           </div>
 
           <div className="reg-search__actions">
@@ -259,7 +357,10 @@ export default function RegulatorySearch() {
             <button type="submit" disabled={loading}>
               {loading ? (
                 <>
-                  <LoaderCircle size={17} className="reg-search__spin" />
+                  <LoaderCircle
+                    size={17}
+                    className="reg-search__spin"
+                  />
                   Searching...
                 </>
               ) : (

@@ -1,4 +1,3 @@
-
 import { useMemo, useState } from "react";
 import {
   Activity,
@@ -9,6 +8,9 @@ import {
   Search,
   ShieldCheck,
   XCircle,
+  FileSearch,
+  ArrowUpDown,
+  ClipboardCheck,
 } from "lucide-react";
 import { runImpactAnalysis } from "../services/impactService";
 import "./TradeImpact.css";
@@ -16,15 +18,23 @@ import "./TradeImpact.css";
 const PAGE_SIZE = 8;
 
 function normalizeStatus(value = "") {
-  const status = String(value).toLowerCase();
+  const status = String(value).toLowerCase().replace(/[\s-]+/g, "_");
 
-  if (["violation", "failed", "fail", "non_compliant"].includes(status)) {
+  if (
+    ["violation", "failed", "fail", "non_compliant", "noncompliant"].includes(
+      status
+    )
+  ) {
     return "violation";
   }
+
   if (["compliant", "passed", "pass", "ok"].includes(status)) {
     return "compliant";
   }
-  if (["warning", "review", "needs_review"].includes(status)) {
+
+  if (
+    ["warning", "review", "needs_review", "pending_review"].includes(status)
+  ) {
     return "review";
   }
 
@@ -40,6 +50,7 @@ function exportCsv(rows) {
     ["Rule Name", "rule_name"],
     ["Status", "status"],
     ["Reason", "reason"],
+    ["Explanation", "explanation"],
     ["Document", "document_name"],
     ["Page", "page"],
   ];
@@ -60,9 +71,13 @@ function exportCsv(rows) {
 
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
+
   link.href = url;
   link.download = "reg-iris-impact-matrix.csv";
+  document.body.appendChild(link);
   link.click();
+  link.remove();
+
   URL.revokeObjectURL(url);
 }
 
@@ -83,14 +98,23 @@ export default function TradeImpact() {
 
     try {
       const data = await runImpactAnalysis({});
-      setItems(data.items);
+      const results = Array.isArray(data)
+        ? data
+        : Array.isArray(data?.items)
+          ? data.items
+          : Array.isArray(data?.results)
+            ? data.results
+            : [];
+
+      setItems(results);
       setHasRun(true);
       setPage(1);
-    } catch {
+    } catch (err) {
       setItems([]);
       setError(
-        "Analysis failed. Check that the backend is running and its API endpoint matches the frontend configuration."
+        "Analysis couldn't be completed. Check that the backend is running and the impact-analysis API endpoint is configured correctly."
       );
+      console.error("Trade impact analysis failed:", err);
     } finally {
       setLoading(false);
     }
@@ -104,9 +128,11 @@ export default function TradeImpact() {
         item.trade_id,
         item.rule_id,
         item.rule_name,
+        item.status,
         item.reason,
         item.explanation,
         item.document_name,
+        item.page,
       ]
         .map((value) => String(value ?? ""))
         .join(" ")
@@ -126,13 +152,16 @@ export default function TradeImpact() {
       const first = String(a[sortBy] ?? "").toLowerCase();
       const second = String(b[sortBy] ?? "").toLowerCase();
 
-      return first.localeCompare(second, undefined, { numeric: true }) *
-        (ascending ? 1 : -1);
+      return (
+        first.localeCompare(second, undefined, { numeric: true }) *
+        (ascending ? 1 : -1)
+      );
     });
   }, [filteredItems, sortBy, ascending]);
 
   const pageCount = Math.max(1, Math.ceil(sortedItems.length / PAGE_SIZE));
   const currentPage = Math.min(page, pageCount);
+
   const visibleItems = sortedItems.slice(
     (currentPage - 1) * PAGE_SIZE,
     currentPage * PAGE_SIZE
@@ -141,9 +170,11 @@ export default function TradeImpact() {
   const violations = items.filter(
     (item) => normalizeStatus(item.status) === "violation"
   ).length;
+
   const compliant = items.filter(
     (item) => normalizeStatus(item.status) === "compliant"
   ).length;
+
   const review = items.filter(
     (item) => normalizeStatus(item.status) === "review"
   ).length;
@@ -161,15 +192,23 @@ export default function TradeImpact() {
     setPage(1);
   }
 
+  function clearFilters() {
+    setQuery("");
+    setStatusFilter("all");
+    setPage(1);
+  }
+
   return (
     <main className="trade-impact">
       <header className="trade-impact__header">
         <div>
-          <p className="trade-impact__eyebrow">COMPLIANCE WORKSPACE</p>
+          <p className="trade-impact__eyebrow">
+            REG IRIS WORKSPACE / COMPLIANCE
+          </p>
           <h1>Trade Impact Analysis</h1>
           <p className="trade-impact__subtitle">
-            Evaluate trades against regulatory rules and inspect potential
-            compliance impacts.
+            Evaluate trades against regulatory rules, identify potential
+            compliance risks, and review supporting regulatory evidence.
           </p>
         </div>
 
@@ -184,11 +223,11 @@ export default function TradeImpact() {
           ) : (
             <Activity size={17} />
           )}
-          {loading ? "Analyzing..." : "Run analysis"}
+          {loading ? "Analyzing..." : hasRun ? "Run again" : "Run analysis"}
         </button>
       </header>
 
-      <section className="trade-impact__stats">
+      <section className="trade-impact__stats" aria-label="Analysis summary">
         <article className="trade-impact__stat">
           <span className="trade-impact__stat-icon trade-impact__stat-icon--blue">
             <Activity size={20} />
@@ -234,7 +273,11 @@ export default function TradeImpact() {
         <div className="trade-impact__panel-heading">
           <div>
             <h2>Impact Matrix</h2>
-            <p>Trade-to-rule evaluation results</p>
+            <p>
+              {hasRun
+                ? `${items.length} evaluation result${items.length === 1 ? "" : "s"} returned`
+                : "Trade-to-rule evaluation results will appear here"}
+            </p>
           </div>
 
           <button
@@ -253,7 +296,7 @@ export default function TradeImpact() {
             <Search size={17} />
             <input
               aria-label="Search impact results"
-              placeholder="Search trade, rule, or reason..."
+              placeholder="Search trade, rule, document, or reason..."
               value={query}
               onChange={(event) => {
                 setQuery(event.target.value);
@@ -286,34 +329,82 @@ export default function TradeImpact() {
             <option value="rule_id">Sort by rule</option>
             <option value="status">Sort by status</option>
           </select>
+
+          <button
+            className="trade-impact__export"
+            type="button"
+            onClick={() => setAscending((value) => !value)}
+            title={`Switch to ${ascending ? "descending" : "ascending"} order`}
+            aria-label={`Switch to ${ascending ? "descending" : "ascending"} order`}
+          >
+            <ArrowUpDown size={15} />
+            {ascending ? "Ascending" : "Descending"}
+          </button>
         </div>
 
         {error && (
           <div className="trade-impact__error" role="alert">
             <XCircle size={18} />
-            {error}
+            <span>{error}</span>
           </div>
         )}
 
         {!hasRun && !loading && !error && (
           <div className="trade-impact__empty">
-            <Activity size={32} />
+            <span className="trade-impact__stat-icon trade-impact__stat-icon--blue">
+              <FileSearch size={25} />
+            </span>
             <h3>Ready to analyze trades</h3>
             <p>
-              Run the analysis to view trade-to-rule impacts returned by
-              the backend.
+              Run an analysis to evaluate available trade data against
+              regulatory rules. Results, compliance statuses, and source
+              references will appear in the impact matrix.
             </p>
+            <button
+              className="trade-impact__run"
+              type="button"
+              onClick={handleRunAnalysis}
+            >
+              <Activity size={16} />
+              Start analysis
+            </button>
           </div>
         )}
 
         {loading && (
           <div className="trade-impact__empty" role="status">
-            <RefreshCw size={28} className="trade-impact__spin" />
-            <p>Evaluating trades against available rules...</p>
+            <RefreshCw
+              size={30}
+              className="trade-impact__spin"
+            />
+            <h3>Analyzing trade impacts</h3>
+            <p>
+              Evaluating trades against the available regulatory rules.
+              Please wait...
+            </p>
           </div>
         )}
 
-        {hasRun && !loading && !error && (
+        {hasRun && !loading && !error && items.length === 0 && (
+          <div className="trade-impact__empty">
+            <ClipboardCheck size={32} />
+            <h3>No evaluation results returned</h3>
+            <p>
+              The analysis request completed, but no results were returned.
+              Check whether trade data and regulatory rules are available.
+            </p>
+            <button
+              className="trade-impact__export"
+              type="button"
+              onClick={handleRunAnalysis}
+            >
+              <RefreshCw size={15} />
+              Try again
+            </button>
+          </div>
+        )}
+
+        {hasRun && !loading && !error && items.length > 0 && (
           <>
             <div className="trade-impact__table-wrap">
               <table className="trade-impact__table">
@@ -333,24 +424,30 @@ export default function TradeImpact() {
 
                     return (
                       <tr
-                        key={`${item.trade_id}-${item.rule_id}-${index}`}
+                        key={`${item.trade_id ?? "trade"}-${item.rule_id ?? "rule"}-${index}`}
                       >
                         <td className="trade-impact__id">
                           {item.trade_id ?? "—"}
                         </td>
-                        <td>{item.rule_id ?? item.rule_name ?? "—"}</td>
+
+                        <td>
+                          {item.rule_id ?? item.rule_name ?? "—"}
+                        </td>
+
                         <td>
                           <span
                             className={`trade-impact__badge trade-impact__badge--${status}`}
                           >
-                            {status.replace("_", " ")}
+                            {status.replace(/_/g, " ")}
                           </span>
                         </td>
+
                         <td>
                           {item.reason ??
                             item.explanation ??
                             "No explanation provided"}
                         </td>
+
                         <td>
                           {item.document_name
                             ? `${item.document_name}${
@@ -364,8 +461,16 @@ export default function TradeImpact() {
 
                   {visibleItems.length === 0 && (
                     <tr>
-                      <td colSpan="5" className="trade-impact__no-results">
-                        No matching results.
+                      <td colSpan={5} className="trade-impact__no-results">
+                        <Search size={19} />
+                        <p>No matching results found.</p>
+                        <button
+                          className="trade-impact__export"
+                          type="button"
+                          onClick={clearFilters}
+                        >
+                          Clear filters
+                        </button>
                       </td>
                     </tr>
                   )}

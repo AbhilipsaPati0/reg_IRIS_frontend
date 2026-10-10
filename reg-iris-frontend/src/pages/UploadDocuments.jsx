@@ -1,12 +1,12 @@
-
 import { useState } from 'react'
-import './UploadDocuments.css'
 import {
   Upload,
   ShieldCheck,
   FileText,
   GitMerge,
   Replace,
+  FileCheck2,
+  ChevronDown,
 } from 'lucide-react'
 
 import PageHeader from '../components/common/PageHeader'
@@ -16,9 +16,10 @@ import SelectedFile from '../components/documents/SelectedFile'
 import UploadResult from '../components/documents/UploadResult'
 
 import { uploadDocument } from '../services/documentService'
+import './UploadDocuments.css'
 
 const ALLOWED_EXTENSIONS = ['pdf', 'html', 'htm', 'txt']
-const MAX_FILE_SIZE = 10 * 1024 * 1024 // 10 MB
+const MAX_FILE_SIZE = 10 * 1024 * 1024
 
 const FILE_ACCEPT_TYPES = {
   all: '.pdf,.html,.htm,.txt',
@@ -27,9 +28,17 @@ const FILE_ACCEPT_TYPES = {
   txt: '.txt',
 }
 
+const FILE_TYPE_LABELS = {
+  all: 'All supported formats',
+  pdf: 'PDF document',
+  html: 'HTML document',
+  txt: 'Text document',
+}
+
 function UploadDocuments() {
   const [selectedFile, setSelectedFile] = useState(null)
   const [fileType, setFileType] = useState('all')
+  const [uploadFormat, setUploadFormat] = useState('all')
   const [importMode, setImportMode] = useState('')
   const [uploading, setUploading] = useState(false)
   const [result, setResult] = useState(null)
@@ -39,19 +48,50 @@ function UploadDocuments() {
     const nextType = event.target.value
 
     setFileType(nextType)
+    setUploadFormat(nextType)
     setError('')
     setResult(null)
 
-    // Clear a selected file if it doesn't match the new filter.
-    if (selectedFile && nextType !== 'all') {
-      const extension = selectedFile.name.split('.').pop().toLowerCase()
+    if (selectedFile) {
+      const extension = selectedFile.name
+        .split('.')
+        .pop()
+        .toLowerCase()
 
       const matches =
-        nextType === 'pdf'
-          ? extension === 'pdf'
-          : nextType === 'html'
-            ? ['html', 'htm'].includes(extension)
-            : extension === 'txt'
+        nextType === 'all' ||
+        (nextType === 'pdf' && extension === 'pdf') ||
+        (nextType === 'html' &&
+          ['html', 'htm'].includes(extension)) ||
+        (nextType === 'txt' && extension === 'txt')
+
+      if (!matches) {
+        setSelectedFile(null)
+      }
+    }
+  }
+
+  function handleUploadFormatChange(event) {
+    const nextFormat = event.target.value
+
+    // Keep the two format selections synchronized.
+    setUploadFormat(nextFormat)
+    setFileType(nextFormat)
+    setError('')
+    setResult(null)
+
+    if (selectedFile) {
+      const extension = selectedFile.name
+        .split('.')
+        .pop()
+        .toLowerCase()
+
+      const matches =
+        nextFormat === 'all' ||
+        (nextFormat === 'pdf' && extension === 'pdf') ||
+        (nextFormat === 'html' &&
+          ['html', 'htm'].includes(extension)) ||
+        (nextFormat === 'txt' && extension === 'txt')
 
       if (!matches) {
         setSelectedFile(null)
@@ -76,12 +116,15 @@ function UploadDocuments() {
     const matchesFilter =
       fileType === 'all' ||
       (fileType === 'pdf' && extension === 'pdf') ||
-      (fileType === 'html' && ['html', 'htm'].includes(extension)) ||
+      (fileType === 'html' &&
+        ['html', 'htm'].includes(extension)) ||
       (fileType === 'txt' && extension === 'txt')
 
     if (!matchesFilter) {
       setSelectedFile(null)
-      setError(`Please select a file matching the ${fileType.toUpperCase()} filter.`)
+      setError(
+        `Please select a file matching the ${fileType.toUpperCase()} filter.`
+      )
       return
     }
 
@@ -121,13 +164,12 @@ function UploadDocuments() {
     setResult(null)
 
     try {
-      // The service must send importMode to the backend.
       const response = await uploadDocument(selectedFile, importMode)
       setResult(response)
     } catch (err) {
       setError(
         err.message ||
-          'Unable to upload the document. Please check your connection.',
+          'Unable to upload the document. Please check your connection.'
       )
     } finally {
       setUploading(false)
@@ -150,24 +192,60 @@ function UploadDocuments() {
 
           <div>
             <h2>Upload regulatory documents</h2>
-            <p>Choose your file type and import method before uploading.</p>
+            <p>
+              Choose your file format and import method before uploading.
+            </p>
           </div>
         </div>
 
-        <div className="upload-filter">
-          <label htmlFor="upload-file-type">Filter file type</label>
+        <div className="upload-filter-grid">
+          <div className="upload-filter">
+            <label htmlFor="upload-file-type">
+              1. Filter file type
+            </label>
 
-          <select
-            id="upload-file-type"
-            value={fileType}
-            onChange={handleFileTypeChange}
-            disabled={uploading}
-          >
-            <option value="all">All supported files</option>
-            <option value="pdf">PDF documents (.pdf)</option>
-            <option value="html">HTML documents (.html, .htm)</option>
-            <option value="txt">Text documents (.txt)</option>
-          </select>
+            <div className="upload-select-wrap">
+              <FileText size={17} />
+              <select
+                id="upload-file-type"
+                value={fileType}
+                onChange={handleFileTypeChange}
+                disabled={uploading}
+              >
+                <option value="all">All supported files</option>
+                <option value="pdf">PDF documents (.pdf)</option>
+                <option value="html">HTML documents (.html, .htm)</option>
+                <option value="txt">Text documents (.txt)</option>
+              </select>
+              <ChevronDown size={16} />
+            </div>
+          </div>
+
+          <div className="upload-filter">
+            <label htmlFor="upload-format">
+              2. Upload format
+            </label>
+
+            <div className="upload-select-wrap">
+              <FileCheck2 size={17} />
+              <select
+                id="upload-format"
+                value={uploadFormat}
+                onChange={handleUploadFormatChange}
+                disabled={uploading}
+              >
+                <option value="all">All supported formats</option>
+                <option value="pdf">PDF document</option>
+                <option value="html">HTML document</option>
+                <option value="txt">Text document</option>
+              </select>
+              <ChevronDown size={16} />
+            </div>
+
+            <p className="upload-filter-hint">
+              Automatically follows the file type selected above.
+            </p>
+          </div>
         </div>
 
         <FileDropzone
@@ -185,7 +263,9 @@ function UploadDocuments() {
 
         <div className="upload-mode">
           <div className="upload-mode-heading">
-            <h3>Import mode <span>*</span></h3>
+            <h3>
+              Import mode <span>*</span>
+            </h3>
             <p>Choose how this upload should affect existing content.</p>
           </div>
 
