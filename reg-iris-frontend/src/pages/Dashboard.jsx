@@ -5,6 +5,7 @@ import {
   ArrowUpRight,
   Bell,
   BookOpen,
+  BotMessageSquare,
   CheckCircle2,
   FileText,
   GitCompare,
@@ -100,7 +101,9 @@ function Dashboard() {
 
           <div className="dashboard-trust-note">
             <ShieldCheck size={17} />
-            <span>Built for regulatory research and compliance workflows</span>
+            <span>
+              Built for regulatory research and compliance workflows
+            </span>
           </div>
         </div>
 
@@ -199,6 +202,7 @@ function Dashboard() {
               Browse your available documents and build a central place
               for regulatory research.
             </p>
+
             <button
               type="button"
               className="dashboard-text-link"
@@ -246,6 +250,18 @@ function Dashboard() {
         <span>REG IRIS</span>
         <span>Regulatory intelligence workspace</span>
       </footer>
+
+      {/* Floating AI Assistant button */}
+      <button
+        type="button"
+        className="dashboard-ai-fab"
+        onClick={() => navigate('/ai-assistant')}
+        aria-label="Open Reg IRIS AI Assistant"
+        title="Ask Reg IRIS AI"
+      >
+        <BotMessageSquare size={20} />
+        <span>Ask Reg IRIS AI</span>
+      </button>
     </div>
   )
 }

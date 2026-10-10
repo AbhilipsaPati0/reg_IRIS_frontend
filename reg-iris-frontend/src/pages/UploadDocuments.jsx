@@ -1,9 +1,9 @@
+
 import { useState } from 'react'
 import {
   Upload,
   ShieldCheck,
   FileText,
-  GitMerge,
   Replace,
   FileCheck2,
   ChevronDown,
@@ -28,21 +28,41 @@ const FILE_ACCEPT_TYPES = {
   txt: '.txt',
 }
 
-const FILE_TYPE_LABELS = {
-  all: 'All supported formats',
-  pdf: 'PDF document',
-  html: 'HTML document',
-  txt: 'Text document',
-}
+const EXISTING_DOCUMENTS = [
+  {
+    id: 'demo-rbi-cross-border',
+    name: 'RBI — Cross-Border Reporting (Demo)',
+  },
+  {
+    id: 'demo-sebi-securities',
+    name: 'SEBI — Securities Compliance (Demo)',
+  },
+  {
+    id: 'demo-rbi-retention',
+    name: 'RBI — Record Retention (Demo)',
+  },
+]
 
 function UploadDocuments() {
   const [selectedFile, setSelectedFile] = useState(null)
   const [fileType, setFileType] = useState('all')
   const [uploadFormat, setUploadFormat] = useState('all')
   const [importMode, setImportMode] = useState('')
+  const [existingDocumentId, setExistingDocumentId] = useState('')
   const [uploading, setUploading] = useState(false)
   const [result, setResult] = useState(null)
   const [error, setError] = useState('')
+
+  function fileMatchesType(file, type) {
+    const extension = file.name.split('.').pop().toLowerCase()
+
+    return (
+      type === 'all' ||
+      (type === 'pdf' && extension === 'pdf') ||
+      (type === 'html' && ['html', 'htm'].includes(extension)) ||
+      (type === 'txt' && extension === 'txt')
+    )
+  }
 
   function handleFileTypeChange(event) {
     const nextType = event.target.value
@@ -52,50 +72,21 @@ function UploadDocuments() {
     setError('')
     setResult(null)
 
-    if (selectedFile) {
-      const extension = selectedFile.name
-        .split('.')
-        .pop()
-        .toLowerCase()
-
-      const matches =
-        nextType === 'all' ||
-        (nextType === 'pdf' && extension === 'pdf') ||
-        (nextType === 'html' &&
-          ['html', 'htm'].includes(extension)) ||
-        (nextType === 'txt' && extension === 'txt')
-
-      if (!matches) {
-        setSelectedFile(null)
-      }
+    if (selectedFile && !fileMatchesType(selectedFile, nextType)) {
+      setSelectedFile(null)
     }
   }
 
   function handleUploadFormatChange(event) {
     const nextFormat = event.target.value
 
-    // Keep the two format selections synchronized.
     setUploadFormat(nextFormat)
     setFileType(nextFormat)
     setError('')
     setResult(null)
 
-    if (selectedFile) {
-      const extension = selectedFile.name
-        .split('.')
-        .pop()
-        .toLowerCase()
-
-      const matches =
-        nextFormat === 'all' ||
-        (nextFormat === 'pdf' && extension === 'pdf') ||
-        (nextFormat === 'html' &&
-          ['html', 'htm'].includes(extension)) ||
-        (nextFormat === 'txt' && extension === 'txt')
-
-      if (!matches) {
-        setSelectedFile(null)
-      }
+    if (selectedFile && !fileMatchesType(selectedFile, nextFormat)) {
+      setSelectedFile(null)
     }
   }
 
@@ -113,17 +104,10 @@ function UploadDocuments() {
       return
     }
 
-    const matchesFilter =
-      fileType === 'all' ||
-      (fileType === 'pdf' && extension === 'pdf') ||
-      (fileType === 'html' &&
-        ['html', 'htm'].includes(extension)) ||
-      (fileType === 'txt' && extension === 'txt')
-
-    if (!matchesFilter) {
+    if (!fileMatchesType(file, fileType)) {
       setSelectedFile(null)
       setError(
-        `Please select a file matching the ${fileType.toUpperCase()} filter.`
+        `Please select a file matching the ${fileType.toUpperCase()} filter.`,
       )
       return
     }
@@ -151,11 +135,23 @@ function UploadDocuments() {
     setError('')
   }
 
+  function handleImportModeChange(mode) {
+    setImportMode(mode)
+    setExistingDocumentId('')
+    setError('')
+    setResult(null)
+  }
+
   async function handleUpload() {
     if (!selectedFile || uploading) return
 
     if (!importMode) {
-      setError('Please select Concatenate or Override before uploading.')
+      setError('Please select New or Override before uploading.')
+      return
+    }
+
+    if (importMode === 'override' && !existingDocumentId) {
+      setError('Please select the existing regulation to replace.')
       return
     }
 
@@ -164,12 +160,15 @@ function UploadDocuments() {
     setResult(null)
 
     try {
+      // Existing service signature retained for compatibility.
+      // The backend must separately support the selected target ID
+      // before Override can safely replace a specific document.
       const response = await uploadDocument(selectedFile, importMode)
       setResult(response)
     } catch (err) {
       setError(
         err.message ||
-          'Unable to upload the document. Please check your connection.'
+          'Unable to upload the document. Please check your connection.',
       )
     } finally {
       setUploading(false)
@@ -222,9 +221,7 @@ function UploadDocuments() {
           </div>
 
           <div className="upload-filter">
-            <label htmlFor="upload-format">
-              2. Upload format
-            </label>
+            <label htmlFor="upload-format">2. Upload format</label>
 
             <div className="upload-select-wrap">
               <FileCheck2 size={17} />
@@ -270,41 +267,33 @@ function UploadDocuments() {
           </div>
 
           <div className="upload-mode-options">
-            <label
-              className={
-                importMode === 'concatenate' ? 'selected' : ''
-              }
-            >
+            <label className={importMode === 'new' ? 'selected' : ''}>
               <input
                 type="radio"
                 name="importMode"
-                value="concatenate"
-                checked={importMode === 'concatenate'}
-                onChange={() => setImportMode('concatenate')}
+                value="new"
+                checked={importMode === 'new'}
+                onChange={() => handleImportModeChange('new')}
                 disabled={uploading}
               />
 
               <span className="upload-mode-icon">
-                <GitMerge size={19} />
+                <FileCheck2 size={19} />
               </span>
 
               <span className="upload-mode-copy">
-                <strong>Concatenate</strong>
-                <small>
-                  Append content to the existing collection.
-                </small>
+                <strong>New</strong>
+                <small>Add a new regulation to the library.</small>
               </span>
             </label>
 
-            <label
-              className={importMode === 'override' ? 'selected' : ''}
-            >
+            <label className={importMode === 'override' ? 'selected' : ''}>
               <input
                 type="radio"
                 name="importMode"
                 value="override"
                 checked={importMode === 'override'}
-                onChange={() => setImportMode('override')}
+                onChange={() => handleImportModeChange('override')}
                 disabled={uploading}
               />
 
@@ -315,17 +304,61 @@ function UploadDocuments() {
               <span className="upload-mode-copy">
                 <strong>Override</strong>
                 <small>
-                  Replace the matching existing document or content.
+                  Replace a selected regulation with its updated version.
                 </small>
               </span>
             </label>
           </div>
 
           {importMode === 'override' && (
-            <p className="upload-mode-warning">
-              Confirm that the backend identifies the correct existing
-              document before replacing its content.
-            </p>
+            <div className="upload-filter override-document-select">
+              <label htmlFor="existing-document">
+                Select existing regulation to replace *
+              </label>
+
+              <div className="upload-select-wrap">
+                <FileText size={17} />
+
+                <select
+                  id="existing-document"
+                  value={existingDocumentId}
+                  onChange={(event) => {
+                    setExistingDocumentId(event.target.value)
+                    setError('')
+                    setResult(null)
+                  }}
+                  disabled={uploading}
+                  required
+                >
+                  <option value="">Choose an existing regulation</option>
+
+                  {EXISTING_DOCUMENTS.map((document) => (
+                    <option key={document.id} value={document.id}>
+                      {document.name}
+                    </option>
+                  ))}
+                </select>
+
+                <ChevronDown size={16} />
+              </div>
+
+              <p className="upload-filter-hint">
+                Demo documents are shown here. Connect this list to your
+                regulatory library API for actual documents.
+              </p>
+
+              {existingDocumentId && (
+                <p className="upload-mode-warning">
+                  Selected target:{' '}
+                  {
+                    EXISTING_DOCUMENTS.find(
+                      (document) => document.id === existingDocumentId,
+                    )?.name
+                  }
+                  . Confirm the target before replacing its content.
+                </p>
+              )}
+            </div>
           )}
         </div>
 
@@ -339,7 +372,12 @@ function UploadDocuments() {
 
           <LoadingButton
             loading={uploading}
-            disabled={!selectedFile || !importMode || uploading}
+            disabled={
+              !selectedFile ||
+              !importMode ||
+              (importMode === 'override' && !existingDocumentId) ||
+              uploading
+            }
             onClick={handleUpload}
             className="primary-button"
           >

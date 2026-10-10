@@ -7,6 +7,7 @@ import RegulatorySearch from './pages/RegulatorySearch';
 import RegulatoryLibrary from './pages/RegulatoryLibrary';
 import TradeImpact from './pages/TradeImpact';
 import RegulatoryChangeAnalysis from './pages/RegulatoryChangeAnalysis';
+import AIAssistant from './pages/AIAssistant'
 
 import './index.css';
 
@@ -41,6 +42,7 @@ function AppRoutes() {
         <Route path="library" element={<RegulatoryLibrary />} />
         <Route path="search" element={<RegulatorySearch />} />
         <Route path="impact" element={<TradeImpact />} />
+        <Route path="ai-assistant" element={<AIAssistant />} />
 
         <Route
           path="regulatory-change/:id"

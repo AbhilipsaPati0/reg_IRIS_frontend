@@ -753,3 +753,47 @@
     animation: none !important;
   }
 }
+
+/* Floating AI Assistant button */
+.dashboard-ai-fab {
+  position: fixed;
+  right: 28px;
+  bottom: 25px;
+  z-index: 20;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 50px;
+  padding: 0 19px;
+  border: 1px solid #075b42;
+  border-radius: 999px;
+  background: #075b42;
+  color: #fff;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 750;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgb(7 91 66 / 24%);
+  transition: transform 160ms ease, background 160ms ease;
+}
+
+.dashboard-ai-fab:hover {
+  transform: translateY(-2px);
+  background: #064b38;
+}
+
+.dashboard-ai-fab:focus-visible {
+  outline: 3px solid #8bc9a8;
+  outline-offset: 3px;
+}
+
+@media (max-width: 600px) {
+  .dashboard-ai-fab {
+    right: 15px;
+    bottom: 15px;
+    min-height: 46px;
+    padding: 0 15px;
+  }
+}
+
